@@ -1,0 +1,32 @@
+import RPi.GPIO as GPIO
+import math as m
+import time as tm
+
+def binary(n):
+    return [int(element) for element in bin(n)[2::].zfill(8)]
+
+GPIO.setmode(GPIO.BCM)
+dac = [8, 11, 7, 1, 0, 5, 12, 6]
+GPIO.setup(dac, GPIO.OUT)
+
+try:
+    while(1):
+        num = input("Введите число от 0 до 255")
+        if num == "q":
+            break
+        if num[0] in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
+            if int(num) >= 0 and int(num) <= 255:
+                num = int(num)
+
+            else:
+                print("от 0 до 255")
+        else:
+            print("Неверно!")
+            continue
+
+        GPIO.output(dac, binary(num))
+        print("Преполагаемое напряжение равно", num * 3.3 / 256)
+
+finally:
+    GPIO.output(dac, 0)
+    GPIO.cleanup()
